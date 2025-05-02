@@ -28,6 +28,93 @@ export default class Tree {
         return rootNode;
     }
 
+    insert(value) {
+        //New tree
+        if (this.root === null) {
+            this.root = new Node(value);
+            this.prettyPrint(this.root);
+            return;
+        }
+
+        //Find the node to introduce the new value
+        let currentNode = this.root;
+        let parentNode = null;
+        while(currentNode !== null) {
+            if (value === currentNode.data)
+                return;
+
+            parentNode = currentNode;
+            value > currentNode.data ? currentNode = currentNode.right : currentNode = currentNode.left;
+        }
+
+        //Introduce the value
+        value > parentNode.data ? parentNode.right = new Node(value) : parentNode.left = new Node(value);
+        this.prettyPrint(this.root);
+    }
+
+    delete(value) {
+        if (this.root === null) {
+            return;
+        }
+
+        // Helper function to delete a node recursively
+        const deleteNode = (node, value) => {
+            if (node === null) return node;
+
+            if (value < node.data) {
+                // Si el valor a eliminar es menor, busca en el subárbol izquierdo
+                node.left = deleteNode(node.left, value);
+            } else if (value > node.data) {
+                // Si el valor a eliminar es mayor, busca en el subárbol derecho
+                node.right = deleteNode(node.right, value);
+            } else {
+                // Nodo encontrado (node.data === value)
+
+                // Caso 1: Nodo sin hijos (nodo hoja)
+                if (node.left === null && node.right === null) {
+                    return null; // Elimina el nodo devolviendo `null`
+                }
+
+                // Caso 2: Nodo con un solo hijo (derecho)
+                if (node.left === null) {
+                    return node.right; // Reemplaza el nodo con su hijo derecho
+                }
+
+                // Caso 3: Nodo con un solo hijo (izquierdo)
+                if (node.right === null) {
+                    return node.left; // Reemplaza el nodo con su hijo izquierdo
+                }
+
+                // Caso 4: Nodo con dos hijos
+                // Encuentra el sucesor in-order (el menor valor en el subárbol derecho)
+                let successor = node.right;
+                while (successor.left !== null) {
+                    successor = successor.left;
+                }
+
+                // Reemplaza el valor del nodo actual con el valor del sucesor
+                node.data = successor.data;
+
+                // Elimina el sucesor del subárbol derecho
+                node.right = deleteNode(node.right, successor.data);
+            }
+
+            return node; // Devuelve el nodo con las referencias actualizadas
+        };
+
+        // Actualiza la raíz del árbol después de la eliminación
+        this.root = deleteNode(this.root, value);
+        this.prettyPrint(this.root);
+    }
+
+    find(value) {
+        let currentNode = this.root;
+        while(currentNode.data !== value && currentNode !== null) {
+            value > currentNode.data ? currentNode = currentNode.right : currentNode = currentNode.left;
+        }
+        return currentNode;
+    }
+
     prettyPrint = (node, prefix = "", isLeft = true) => {
         if (node === null) {
           return;
