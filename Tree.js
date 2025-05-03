@@ -148,6 +148,54 @@ export default class Tree {
         levelOrderRecursive(initialNodes, callback);
     }
 
+    preOrder(callback) {
+        if (callback === null)
+            throw new Error('Callback function needed');
+
+        const preOrderRecursive = (node, callback) => {
+            if(node === null)
+                return;
+
+            callback(node);
+            preOrderRecursive(node.left, callback);
+            preOrderRecursive(node.right, callback);
+        }
+
+        preOrderRecursive(this.root, callback);
+    }
+
+    inOrder(callback) {
+        if (callback === null)
+            throw new Error('Callback function needed');
+
+        const inOrderRecursive = (node, callback) => {
+            if(node === null)
+                return;
+
+            inOrderRecursive(node.left, callback);
+            callback(node);
+            inOrderRecursive(node.right, callback);
+        }
+
+        inOrderRecursive(this.root, callback);
+    }
+
+    postOrder(callback) {
+        if (callback === null)
+            throw new Error('Callback function needed');
+
+        const postOrderRecursive = (node, callback) => {
+            if (node === null)
+                return;
+
+            postOrderRecursive(node.left, callback);
+            postOrderRecursive(node.right, callback);
+            callback(node);
+        }
+
+        postOrderRecursive(this.root, callback);
+    }
+
     prettyPrint = (node, prefix = "", isLeft = true) => {
         if (node === null) {
           return;
