@@ -241,6 +241,48 @@ export default class Tree {
         return calculateDepthRecursive(nodes, 0, value);
     }
 
+    isBalanced() {
+        const checkBalance = node => {
+            let heightLeft = 0;
+            let heightRight = 0;
+            if (node.left !== null)
+                heightLeft = this.height(node.left.data);
+
+            if (node.right !== null)
+                heightRight = this.height(node.right.data);
+
+            return Math.abs(heightLeft - heightRight) <= 1; 
+        }
+
+        const checkBalancetraversal = (nodes, balanced) => {
+            if (nodes.length === 0) return balanced;
+            let children = [];
+            for (let node of nodes) {
+                balanced = checkBalance(node);
+                if (!balanced) return balanced;
+                if (node.left !== null) children.push(node.left);
+                if (node.right !== null) children.push(node.right);
+            }
+            return checkBalancetraversal(children, balanced);
+        }
+        const nodes = [this.root];
+        return checkBalancetraversal(nodes, true);
+    }
+
+    rebalance() {
+        let nodes = [];
+
+        const addNodeFunction = node => {
+            nodes.push(node.data);
+        } 
+        //Load all the nodes
+        this.inOrder(addNodeFunction);
+
+        //Re create the tree
+        this.root = this.buildTree(nodes);
+        this.prettyPrint(this.root);
+    }
+
     prettyPrint = (node, prefix = "", isLeft = true) => {
         if (node === null) {
           return;
