@@ -196,6 +196,51 @@ export default class Tree {
         postOrderRecursive(this.root, callback);
     }
 
+    height(value) {
+        if (value === null) return null;
+
+        const calculateHeightRecursive = (nodes, height) => {
+            if (nodes.length === 0) return height;
+
+            let children = [];
+            nodes.forEach(node => {
+                if (node.right !== null) children.push(node.right);
+                if (node.left !== null) children.push(node.left);
+            });
+
+            return children.length > 0 ? calculateHeightRecursive(children, height + 1) : height;
+        }
+
+        //First step: Find the node
+        const node = this.find(value);
+        if (node === null) return null;
+        const nodes = [node];
+        return calculateHeightRecursive(nodes, 0);
+    }
+
+    depth(value) {
+        if (value === null) return null;
+
+        const calculateDepthRecursive = (nodes, depth, value) => {
+            if (nodes.length === 0) return null;
+
+            let children = [];
+            for (let node of nodes) {
+                if (node.data === value) {
+                    return depth; // Devuelve la profundidad cuando se encuentra el nodo
+                }
+                if (node.left !== null) children.push(node.left);
+                if (node.right !== null) children.push(node.right);
+            }
+
+            // Llama recursivamente y devuelve el resultado
+            return calculateDepthRecursive(children, depth + 1, value);
+        };
+
+        const nodes = [this.root];
+        return calculateDepthRecursive(nodes, 0, value);
+    }
+
     prettyPrint = (node, prefix = "", isLeft = true) => {
         if (node === null) {
           return;
