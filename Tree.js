@@ -115,6 +115,39 @@ export default class Tree {
         return currentNode;
     }
 
+    levelOrder(callback) {
+        if (callback === null)
+            throw new Error('Callback function needed');
+
+        /**
+         * Aux function which traverse through the tree with the given node as the root
+         * and executes the callback in every node
+         * @param {*} node 
+         * @param {*} callback 
+         */
+        const levelOrderRecursive = (nodeArray, callback) => {
+            //Corner case
+            if(nodeArray.length === 0) {
+                return;
+            }
+
+            let children = [];
+
+            nodeArray.forEach(node => {
+                callback(node);
+                if(node.left !== null)
+                    children.push(node.left);
+                if (node.right !== null)
+                    children.push(node.right);
+            });
+            levelOrderRecursive(children, callback);
+        }
+        
+        //Call the aux function
+        const initialNodes = [this.root];
+        levelOrderRecursive(initialNodes, callback);
+    }
+
     prettyPrint = (node, prefix = "", isLeft = true) => {
         if (node === null) {
           return;
